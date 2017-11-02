@@ -53,6 +53,13 @@ call vundle#begin()
     Plugin 'klen/python-mode'                   " Python mode (docs, refactor, lints...)
     Plugin 'scrooloose/syntastic'               " Syntax checking plugin for Vim
 
+    "-------------------=== My plugins ===--------------------------
+    Plugin 'iberianpig/tig-explorer.vim'        " Tig explorer
+    Plugin 'psolyca/vim-pudb'                   " Pudb breakpoints manager
+    Plugin 'christoomey/vim-tmux-navigator'     " Navigate between Vim and tmux
+    Plugin 'airblade/vim-gitgutter'             " Show git diff in the gutter
+    Plugin 'psolyca/vim-bbye'                   " Delete buffers and close files without closing your windows or messing up your layout.
+
 call vundle#end()                           " required
 filetype on
 filetype plugin on
@@ -64,7 +71,7 @@ filetype plugin indent on
 syntax enable                               " syntax highlight
 
 set t_Co=256                                " set 256 colors
-colorscheme wombat256mod                    " set color scheme
+colorscheme desert                          " set color scheme wombat256mod
 
 set number                                  " show line numbers
 set ruler
@@ -81,9 +88,9 @@ set showmatch                               " shows matching part of bracket pai
 
 set enc=utf-8	                            " utf-8 by default
 
-set nobackup 	                            " no backup files
+set nobackup	                            " no backup files
 set nowritebackup                           " only in case you don't want a backup file while editing
-set noswapfile 	                            " no swap files
+set noswapfile	                            " no swap files
 
 set backspace=indent,eol,start              " backspace removes all (indents, EOLs, start) What is start?
 
@@ -104,8 +111,8 @@ inoremap jk <Esc>
 tab sball
 set switchbuf=useopen
 set laststatus=2
-nmap <F9> :bprev<CR>
-nmap <F10> :bnext<CR>
+"nmap <F9> :bprev<CR>
+"nmap <F10> :bnext<CR>
 nmap <silent> <leader>q :SyntasticCheck # <CR> :bp <BAR> bd #<CR>
 
 "" Search settings
@@ -238,3 +245,43 @@ let g:ycm_confirm_extra_conf=0
 
 nmap <leader>g :YcmCompleter GoTo<CR>
 nmap <leader>d :YcmCompleter GoToDefinition<CR>
+
+"=====================================================
+"" My settings
+"=====================================================
+
+set updatetime=250
+
+command! -nargs=1 Silent execute 'silent !' . <q-args> | execute 'redraw!'
+command! DebugRW5toXML execute 'Silent pudb scripts/totalopenstation-cli-parser.py -i sample_data/carlson_rw5/Trav_19leg.rw5 -o sample_data/test.xml -f carlson_rw5 -t xml -r --overwrite'
+"command! AddWIP execute 'Silent git aw'
+"command! ResetWIP execute 'Silent git rw'
+
+let mapleader = ","
+nnoremap <C-Down> <C-W><C-J>
+nnoremap <C-Up> <C-W><C-K>
+nnoremap <C-Right> <C-W><C-L>
+nnoremap <C-Left> <C-W><C-H>
+nnoremap <A-Left> :bprev<CR>
+nnoremap <A-Right> :bnext<CR>
+
+nnoremap <Leader>q :Bdelete<CR>
+
+nnoremap <F6> :ClearPudbBreakPoints<CR>
+nnoremap <F7> :TogglePudbBreakPoint<CR>
+nnoremap <F8> :DebugRW5toXML<CR>
+inoremap <F6> <ESC>:ClearPudbBreakPoints<CR>
+inoremap <F7> <ESC>:TogglePudbBreakPoint<CR>
+inoremap <F8> <ESC>:DebugRW5toXML<CR>
+"nnoremap <C-a> :AddWIP
+"nnoremap <C-u> :ResetWIP
+
+function! ToggleVerbose()
+    if !&verbose
+        set verbosefile=~/verbose.log
+        set verbose=12
+    else
+        set verbose=0
+        set verbosefile=
+    endif
+endfunction
